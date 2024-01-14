@@ -1,0 +1,191 @@
+#include <iostream>
+#include <stdlib.h>
+#include <time.h>
+#include <string>
+using namespace std;
+
+char papan[3][3];
+const char PEMAIN = 'X';
+const char COMPUTER = 'O';
+
+void resetPapan();
+void printPapan();
+int cekRuangKosong();
+void giliranPemain();
+void giliranComputer();
+char cekPemenang();
+void printPemenang(char);
+string ulang;
+
+int main()
+{
+   char pemenang = ' ';
+   char response = ' ';
+
+   do
+   {
+      pemenang = ' ';
+      response = ' ';
+      resetPapan();
+
+      while(pemenang == ' ' && cekRuangKosong() != 0)
+      {
+         printPapan();
+
+         giliranPemain();
+         pemenang = cekPemenang();
+         if(pemenang != ' ' || cekRuangKosong() == 0)
+         {
+            break;
+         }
+
+         giliranComputer();
+         pemenang = cekPemenang();
+         if(pemenang != ' ' || cekRuangKosong() == 0)
+         {
+            break;
+         }
+      }
+      printPapan();
+      printPemenang(pemenang);
+      cout<<"\nApakah kamu ingin bermain lagi? (Y/N): ";
+      cin>>ulang;
+
+   } while (ulang =="Y");
+
+   cout<<"Terima kasih teleh bermain!";
+
+   return 0;
+}
+
+void resetPapan()
+{
+   for(int i = 0; i < 3; i++)
+   {
+      for(int j = 0; j < 3; j++)
+      {
+         papan[i][j] = ' ';
+      }
+   }
+}
+void printPapan()
+{
+	cout<<"Tic--Tac--Toe--Game\n";
+	cout<<" ___ ___ ___\n";
+	cout<<"| "<<papan[0][0]<<" | "<<papan[0][1]<<" | "<<papan[0][2]<<" |";
+	cout<<"\n|---|---|---|\n";
+	cout<<"| "<<papan[1][0]<<" | "<<papan[1][1]<<" | "<<papan[1][2]<<" |";
+   	cout<<"\n|---|---|---|\n";
+   	cout<<"| "<<papan[2][0]<<" | "<<papan[2][1]<<" | "<<papan[2][2]<<" |";
+   	cout<<"\n|---|---|---|\n";
+   	cout<<"\n";
+}
+int cekRuangKosong()
+{
+   int RuangKosong = 9;
+
+   for(int i = 0; i < 3; i++)
+   {
+      for(int j = 0; j < 3; j++)
+      {
+         if(papan[i][j] != ' ')
+         {
+            RuangKosong--;
+         }
+      }
+   }
+   return RuangKosong;
+}
+void giliranPemain()
+{
+   int x;
+   int y;
+
+   do
+   {
+      cout<<"Masukan baris #(1-3): ";
+      cin>>x;
+      x--;
+      cout<<"Masukan kolom #(1-3): ";
+      cin>>y;
+      y--;
+
+      if(papan[x][y] != ' ')
+      {
+         cout<<"Invalid !\n";
+      }
+      else
+      {
+         papan[x][y] = PEMAIN;
+         break;
+      }
+   } while (papan[x][y] != ' ');
+   
+}
+void giliranComputer()
+{
+   //membuat benih berdasarkan waktu sekarang
+   srand(time(0));
+   int x;
+   int y;
+
+   if(cekRuangKosong() > 0)
+   {
+      do
+      {
+         x = rand() % 3;
+         y = rand() % 3;
+      } while (papan[x][y] != ' ');
+      
+      papan[x][y] = COMPUTER;
+   }
+   else
+   {
+      printPemenang(' ');
+   }
+}
+char cekPemenang()
+{
+   //cek baris
+   for(int i = 0; i < 3; i++)
+   {
+      if(papan[i][0] == papan[i][1] && papan[i][0] == papan[i][2])
+      {
+         return papan[i][0];
+      }
+   }
+   //cek kolom
+   for(int i = 0; i < 3; i++)
+   {
+      if(papan[0][i] == papan[1][i] && papan[0][i] == papan[2][i])
+      {
+         return papan[0][i];
+      }
+   }
+   //cek diagonal
+   if(papan[0][0] == papan[1][1] && papan[0][0] == papan[2][2])
+   {
+      return papan[0][0];
+   }
+   if(papan[0][2] == papan[1][1] && papan[0][2] == papan[2][0])
+   {
+      return papan[0][2];
+   }
+
+   return ' ';
+}
+void printPemenang(char PEMENANG)
+{
+
+   if(PEMENANG == PEMAIN)
+   {
+      cout<<"KAMU MENANG!";
+   }
+   else if(PEMENANG == COMPUTER)
+   {
+      cout<<"KAMU KALAH!";
+   }
+   else{
+      cout<<"DRAW!";
+   }
+}
